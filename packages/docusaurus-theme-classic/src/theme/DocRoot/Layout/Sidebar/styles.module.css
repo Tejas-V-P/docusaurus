@@ -20,6 +20,10 @@
     width: var(--doc-sidebar-width);
     margin-top: calc(-1 * var(--ifm-navbar-height));
     border-right: 1px solid var(--ifm-toc-border-color);
+    /*
+     * Do not set `will-change: width` here: creating a permanent compositing layer
+     * causes subpixel font-smoothing artifacts and font flickering during page scroll in Chromium.
+     */
     transition: width var(--ifm-transition-fast) ease;
     clip-path: inset(0);
   }
