@@ -26,3 +26,20 @@ The left sidebar navigation on documentation pages exhibits inconsistent font st
 2. **GPU Rasterization & Subpixel Font Smoothing**: In Chromium-based browsers (Chrome, Edge), promoting `.docSidebarContainer` to an isolated compositing layer causes text within child nodes to alternate between grayscale anti-aliasing and subpixel LCD anti-aliasing during scroll-linked repaint phases.
 3. **Scroll-Triggered Repaint Cycle**: As the main content viewport scrolls, Chromium recalculates clip paths and layer boundaries. This causes navigation links within the sticky sidebar to temporarily render with altered font weight/sharpness before settling back, producing visible flicker.
 4. **Resolution**: Removing `will-change: width` prevents unnecessary permanent GPU layer promotion. CSS `transition: width` performs smoothly without forcing persistent compositing layers that degrade text rasterization.
+
+## Verification & Test Plan
+
+### Browser Compatibility Matrix
+
+| Browser Engine | Target Browsers | Pre-Fix Behavior | Post-Fix Behavior |
+| :-- | :-- | :-- | :-- |
+| **Blink / Chromium** | Chrome, Edge, Brave | Inconsistent font smoothing & weight jitter on scroll | Stable font rendering; smooth width collapse |
+| **Gecko** | Firefox | Stable (no visible font jitter observed) | Continues stable rendering; smooth transition |
+| **WebKit** | Safari | Occasional layer boundary clipping glitch | Clean rendering without clipping artifacts |
+
+### Manual Verification Steps
+
+1. Navigate to a documentation page with a long scrollable body and nested sidebar categories.
+2. Rapidly scroll down to the bottom of the page, then scroll upward through mid-sections.
+3. Observe the left sidebar navigation items: font weight, size, and antialiasing remain static.
+4. Click the sidebar collapse/expand toggle button: confirm the smooth animation completes without frame drops.
